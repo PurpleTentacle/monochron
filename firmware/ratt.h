@@ -35,6 +35,13 @@
 #define RATTCHRON 1
 #define XDALICHRON 1
 #define TSCHRON 1
+#elif defined DCF77SETUP
+// DCF77 receiver connected to the clock
+#define DCF77ENABLE 1
+#define DCF77INFOSCREEN 1
+#define INTRUDERCHRON 1
+#define RATTCHRON 1
+#define SEVENCHRON 1
 #else
 //MultiCronB DeathChron Mix:
 #define GPSENABLE 1
@@ -300,6 +307,9 @@ enum {
 #endif
 #ifdef DEATHCHRON
 	STYLE_DEATH,
+#endif
+#ifdef DCF77INFOSCREEN
+	STYLE_DCF,
 #endif
 	STYLE_RANDOM,
 	STYLE_ROTATE,

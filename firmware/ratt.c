@@ -5,13 +5,14 @@
 #include <avr/eeprom.h>
 #include <avr/wdt.h>
 #include <string.h>
-#include <i2c.h>
 #include <stdlib.h>
+#include "i2c.h"
 #include "util.h"
 #include "ratt.h"
 #include "ks0108.h"
 #include "glcd.h"
 #include "dispatch.h"
+#include "dcf77.h"
 
 
 volatile uint8_t time_s, time_m, time_h;
@@ -108,6 +109,13 @@ SIGNAL(TIMER1_OVF_vect) {
 
 volatile uint16_t millis = 0;
 volatile uint16_t animticker, alarmticker;
+#ifdef DCF77ENABLE
+// see dcf77.c for explanation
+extern volatile uint8_t  dcf_pin_state_save;
+extern volatile uint16_t dcf_pin_ms_count;
+extern volatile uint8_t  last_dcf_pin_state;
+extern volatile uint16_t last_dcf_pin_ms;
+#endif
 SIGNAL(TIMER0_COMPA_vect) {
   if (millis)
     millis--;
@@ -130,6 +138,16 @@ SIGNAL(TIMER0_COMPA_vect) {
     }
     alarmticker--;    
   }
+
+#ifdef DCF77ENABLE
+  dcf_pin_ms_count++;
+  if((DCF_PIN & _BV(DCF_BIT)) != dcf_pin_state_save) {
+    last_dcf_pin_state = dcf_pin_state_save;
+    dcf_pin_state_save ^= _BV(DCF_BIT);
+    last_dcf_pin_ms = dcf_pin_ms_count;
+    dcf_pin_ms_count = 0;
+  }
+#endif
 }
 
 extern uint8_t EE_ALARM_HOUR;
@@ -180,6 +198,9 @@ int main(void) {
 #ifdef GPSENABLE
   UCSR0B |= _BV(TXEN0) | _BV(RXEN0) | _BV(RXCIE0);
   //HardwareSerial Serial(&rx_buffer, &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UDR0, RXEN0, TXEN0, RXCIE0, UDRE0, U2X0);
+#endif
+#ifdef DCF77ENABLE
+  dcf_init();
 #endif
   DEBUGP("RATT Clock");
 
@@ -443,7 +464,11 @@ int main(void) {
 	PORTB &= ~_BV(5);
       }
     }
-  
+
+#ifdef DCF77ENABLE
+    dcf_step();
+#endif
+
     while (animticker);
     //uart_getchar();  // you would uncomment this so you can manually 'step'
   }

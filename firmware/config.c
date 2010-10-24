@@ -663,6 +663,9 @@ uint8_t style_setting_str[] PROGMEM = {
 #ifdef GPSENABLE
   STYLE_GPS, 'G','P','S',' ','S','e','t','u','p',0,
 #endif
+#ifdef DCF77INFOSCREEN
+  STYLE_DCF, 'D','C','F','7','7',' ','I','n','f','o',0,
+#endif
   STYLE_ABOUT, 'A','b','o','u','t',0,
   0xFF,
 };

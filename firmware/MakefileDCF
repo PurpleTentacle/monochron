@@ -6,7 +6,7 @@ F_CPU = 8000000
 FORMAT = ihex 
 
 # Target file name (without extension).
-TARGET = MultiChronB
+TARGET = MultiChronDCF
 
 # Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
@@ -57,7 +57,8 @@ $(patsubst %,-I%,$(EXTRAINCDIRS))
 #CFLAGS += -std=c99
 CFLAGS += -std=gnu99
 
-CFLAGS += -DMULTICHRONB
+CFLAGS += -DDCF77SETUP
+
 
 # Optional assembler flags.
 #  -Wa,...:   tell GCC to pass this to the assembler.

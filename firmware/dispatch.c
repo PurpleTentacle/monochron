@@ -21,6 +21,7 @@
  
 #include "ratt.h"
 #include "dispatch.h"
+#include "anim_dcf77.h"
 
 // 2010-08-07 Version 1 - Dataman
 
@@ -61,6 +62,10 @@ void initanim(void){
 #endif
 #ifdef GPSENABLE
  case STYLE_GPS: initanim_GPS();
+               break;
+#endif
+#ifdef DCF77INFOSCREEN
+ case STYLE_DCF: initanim_dcfinfo();
                break;
 #endif
  case STYLE_ABOUT: initanim_abo();
@@ -161,6 +166,10 @@ void step(void) {
 #endif
 #ifdef DEATHCHRON
  case STYLE_DEATH: step_death(); break;
+#endif
+#ifdef DCF77INFOSCREEN
+ case STYLE_DCF: step_dcfinfo();
+               break;
 #endif
  }
 }
